@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Сводка объетов{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center pt-5">Форма выбора видео</h1>
+        </div>
+    </div>
+    <div class="row pt-5">
+        {% for video in videos %}
+        <div class="col-md-4">
+            <div class="card">
+                {% if video.preview %}
+                <img class="card-img-top" src="{{ video.preview.url }}" alt="">
+                {% endif %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">{{ video.date }}</li>
+                    <li class="list-group-item">{{ video.user.name }}</li>
+                </ul>
+                <div class="card-body text-center">
+                    <a href="{% url 'video-rating' video_uuid=video.id %} " class="card-link">Оценить</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% else %}
+<h1>Для просмотра этой страницы необходимо авторизоваться</h1>
+{% endif %}
+
+{% endblock %}

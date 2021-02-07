@@ -1,0 +1,890 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}Форма Оценки видео{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+<script src="https://cdn.plyr.io/3.6.2/plyr.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.js"
+  integrity="sha256-yE5LLp5HSQ/z+hJeCqkz9hdjNkk1jaiGG0tDCraumnA=" crossorigin="anonymous"></script>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 text-center">
+      <h1 class="pt-5 pb-2">Форма Оценки видео</h1>
+      <video id="player" playsinline controls>
+        <source src="{{ video.video_file.url }}" />
+      </video>
+    </div>
+  </div>
+
+  <form style="margin-top: 160px; margin-bottom: 50px;" class="pt-5">
+    <h2 class="text-center mb-5">Заполните форму</h2>
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <form style="margin-top: 50px; margin-bottom: 50px;" class="pt-5">
+    {% csrf_token %}
+    <div class="form-group row">
+      <input type='hidden' value="{{ video.id }}" name="video">
+      <input type='hidden' value="{{ request.user.id }}" name="trainer">
+      <div class="col-md-4">
+        <input type='text' placeholder='Начало' class="form-control" name='start_time' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Конец' class="form-control" name='end_time' required>
+      </div>
+      <div class="col-md-4">
+        <select class="form-control selectpicker" name="type" required>
+          {% for element in elements %}
+          <option value="{{ element.id }}">{{ element.name }} </option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d1d2' class="form-control number" name='d1d2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='d3d4' class="form-control number" name='d3d4' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e1e2' class="form-control number" name='e1e2' required>
+      </div>
+      <div class="col-md-2">
+        <input type='number' step="0.1" min="0" placeholder='e3e6' class="form-control number" name='e3e6' required>
+      </div>
+      <div class="col-md-4">
+        <input type='text' placeholder='Круг на экране' class="form-control pointer" name='pointer'>
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d1d2' class="form-control" name='c_d1d2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий d3d4' class="form-control" name='c_d3d4'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e1e2' class="form-control" name='c_e1e2'>
+      </div>
+      <div class="col-md-3">
+        <input type='text' placeholder='Комментарий e3e6' class="form-control" name='c_e3e6'>
+      </div>
+    </div>
+    <div class="alerts">
+
+    </div>
+    <div class="text-center">
+      <button class="btn" type='submit'>Сохранить элемент</button>
+    </div>
+  </form>
+  <div style="margin-bottom: 150px;" class="text-center">
+    <button class="btn  btn-success" style="margin-bottom: 50px;" video_id="{{ video.id }}" id="send_notif">Отправить
+      уведомление</button>
+    <div class="alerts notif-a">
+    </div>
+  </div>
+</div>
+<script src="{% static 'js/rate_form.js' %}"></script>
+{% else %}
+<h1>Для просмотра этой страницы необходимо авторизоваться</h1>
+{% endif %}
+
+{% endblock %}
